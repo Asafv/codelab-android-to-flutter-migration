@@ -5,7 +5,7 @@ A new Flutter application to migrate existing Android application.
 Reference: https://github.com/Asafv/PagingTmdb
 
 
-Anroid Application done using MVVM + Repository architecture
+Android Application done using MVVM + Repository architecture
 
 Flutter Application done using BLoC + Repository architecture
 
