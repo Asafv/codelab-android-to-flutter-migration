@@ -11,12 +11,6 @@ import '../models/movie.dart';
 class MovieBloc extends Bloc {
   final TmdbRepository _repo = TmdbRepository();
 
-  final _moviesController = StreamController<List<Movie>>();
-  Stream<List<Movie>> get moviesStream => _moviesController.stream;
-
-  final _appBarTitleController = StreamController<String>();
-  Stream<String> get moviesTypeTitleStream => _appBarTitleController.stream;
-
   /// create the wanted movies type list
   final List<MovieType> moviesType = [
     MovieType("Now Playing", MoviesType.NOW_PLAYING),
@@ -24,6 +18,12 @@ class MovieBloc extends Bloc {
     MovieType("Popular", MoviesType.POPULAR),
     MovieType("Upcoming", MoviesType.UPCOMING)
   ];
+
+  // TODO (1): connect moviesStream to GridList
+  final _moviesController = StreamController<List<Movie>>();
+
+  // TODO (7): connect moviesTypeTitleStream to AppBar for dynamic title
+  final _appBarTitleController = StreamController<String>();
 
   /// Cached data inside the bloc
   MoviesType _currentType;
@@ -37,8 +37,8 @@ class MovieBloc extends Bloc {
   @override
   void dispose() {
     debugPrint('MovieBloc dispose');
-    _moviesController.close();
-    _appBarTitleController.close();
+
+    /// Don't forget to close the streamControllers you created!
   }
 
   Future<Movie> getMovieDetails(int id) async => await _repo.getMovieById(id);
@@ -55,7 +55,7 @@ class MovieBloc extends Bloc {
     if (_currentType != type) {
       _currentType = type;
       movies.clear();
-      _moviesController.sink.add(movies);
+      _moviesController.add(movies);
     }
 
     MoviesResponse res = await _repo.getMovies(_currentType, page: page);
@@ -63,13 +63,12 @@ class MovieBloc extends Bloc {
     /// Error handling
     if (res.error != null) {
       debugPrint("response error: ${res.error}");
-      // TODO: display a toast or an error widget
       return;
     }
 
     /// add to the cached movies list and then update the UI
     movies.addAll(res.results);
-    _moviesController.sink.add(movies);
+    _moviesController.add(movies);
 
     debugPrint("movies.length: ${movies.length}");
   }

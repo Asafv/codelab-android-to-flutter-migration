@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_migration_workshop/details/details_page.dart';
-import 'package:flutter_migration_workshop/models/movie_type.dart';
 
-import '../bloc_provider.dart';
 import '../models/movie.dart';
-import '../widgets/movie_list_item.dart';
 import 'movie_bloc.dart';
 
 class MoviesPage extends StatefulWidget {
@@ -20,6 +16,7 @@ class _MoviesPageState extends State<MoviesPage> {
 
   /// _scrollListener function will be used as a listener to know when we
   /// have reached the bottom of the list
+  // TODO (2): add this scrollListener to the ScrollController attached to Grid list
   _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
@@ -49,6 +46,7 @@ class _MoviesPageState extends State<MoviesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // TODO (7): create a dynamic title
         title: _streamTitle(),
 
         /// AppBar widget simply has an action [] of movies.widgets which will be displayed after the title.
@@ -56,48 +54,13 @@ class _MoviesPageState extends State<MoviesPage> {
         /// If we want the icon to be before the title we can use the `leading` property
         // leading: SOME_WIDGET,
         actions: [
-          PopupMenuButton<MovieType>(
-            onSelected: _bloc.getMoviesByType,
-            itemBuilder: (context) {
-              return _bloc.moviesType.map((type) {
-                return PopupMenuItem<MovieType>(
-                    value: type, child: Text(type.name));
-              }).toList();
-            },
-          )
+          // TODO (6): create the PopupMenuButton widget with moviesType & attach the onSelected method to the bloc in order to query new data
         ],
       ),
 
       /// build the grid view with the streamBuilder.
-      body: StreamBuilder<List<Movie>>(
-        initialData: _bloc.movies,
-        stream: _bloc.moviesStream,
-        builder: (context, snapshot) {
-          if (snapshot.data.isNotEmpty) {
-            /// GridView is a scrollable, 2D array of movies.widgets.
-            /// In Android we would use a RecyclerView in the xml layout with GridLayoutManager
-            return GridView.count(
-              controller: _controller,
-              crossAxisCount: 2,
-              childAspectRatio: .65,
-
-              /// List constructor with the data length and items iteration
-              /// each iteration will return the ListItem (a custom widget we created).
-              /// In Android you will have to use and ViewHolder with the RecyclerViewAdapter
-              /// and define the item in xml.
-              children: List.generate(
-                snapshot.data.length,
-                (index) => MovieListItem(
-                  itemWidth: 200,
-                  movie: snapshot.data[index],
-                  onClick: _openDetailsPage,
-                ),
-              ),
-            );
-          }
-          return _loadingView();
-        },
-      ),
+      // TODO (1): create the Grid list with movies. where fetching movies show loading widget.
+      body: _loadingView(),
     );
   }
 
@@ -115,26 +78,10 @@ class _MoviesPageState extends State<MoviesPage> {
         ),
       );
 
-  Widget _streamTitle() => StreamBuilder(
-      stream: _bloc.moviesTypeTitleStream,
-      builder: (context, snapshot) {
-        return Text("${snapshot.data}");
-      });
+  Widget _streamTitle() => Text("Now Playing Movies");
 
+  // TODO (3): navigate to DetailsPage using Navigator with MaterialPageRoute & BlocProvider
   void _openDetailsPage(Movie movie) {
     /// Build Navigation to DetailsPage
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        /// passing BlocProvider with the MovieBloc will expose it on the below movies.widgets.
-        /// This is a good example of the widget tree.
-        builder: (context) => BlocProvider<MovieBloc>(
-          bloc: _bloc,
-          // we don't want DetailsPage to dispose the MovieBloc.
-          dispose: false,
-          child: DetailsPage(movie: movie),
-        ),
-      ),
-    );
   }
 }

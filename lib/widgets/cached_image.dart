@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+/// Custom Widget to display CachedNetworkImage
 class CachedImage extends StatelessWidget {
   final String imageUrl;
   final BoxFit boxFit;
