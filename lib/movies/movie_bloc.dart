@@ -39,6 +39,8 @@ class MovieBloc extends Bloc {
     debugPrint('MovieBloc dispose');
 
     /// Don't forget to close the streamControllers you created!
+    _moviesController.close();
+    _appBarTitleController.close();
   }
 
   Future<Movie> getMovieDetails(int id) async => await _repo.getMovieById(id);
