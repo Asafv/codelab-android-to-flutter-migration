@@ -19,7 +19,7 @@ class DetailsPage extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             // TODO (4): create a FutureBuilder to retrieve the detailed movie object from API
-            // use _detailColumn
+            _detailColumn(movie),
 
             /// keeping the image in the same hierarchy for Hero animation
             Positioned(top: 10, left: 2, child: _itemImageTile()),

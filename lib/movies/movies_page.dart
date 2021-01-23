@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_migration_workshop/details/details_page.dart';
 import 'package:flutter_migration_workshop/widgets/movie_list_item.dart';
 
+import '../bloc_provider.dart';
 import '../models/movie.dart';
 import 'movie_bloc.dart';
 
@@ -80,7 +82,7 @@ class _MoviesPageState extends State<MoviesPage> {
                 (index) => MovieListItem(
                   itemWidth: 200,
                   movie: snapshot.data[index],
-                  onClick: (movie) => debugPrint('onMovieClicked: $movie'),
+                  onClick: _openDetailsPage,
                 ),
               ),
             );
@@ -107,8 +109,20 @@ class _MoviesPageState extends State<MoviesPage> {
 
   Widget _streamTitle() => Text("Now Playing Movies");
 
-  // TODO (3): navigate to DetailsPage using Navigator with MaterialPageRoute & BlocProvider
   void _openDetailsPage(Movie movie) {
     /// Build Navigation to DetailsPage
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        /// passing BlocProvider with the MovieBloc will expose it on the below movies.widgets.
+        /// This is a good example of the widget tree.
+        builder: (context) => BlocProvider<MovieBloc>(
+          bloc: _bloc,
+          // we don't want DetailsPage to dispose the MovieBloc.
+          dispose: false,
+          child: DetailsPage(movie: movie),
+        ),
+      ),
+    );
   }
 }
