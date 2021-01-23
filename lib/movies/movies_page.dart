@@ -17,7 +17,6 @@ class _MoviesPageState extends State<MoviesPage> {
 
   /// _scrollListener function will be used as a listener to know when we
   /// have reached the bottom of the list
-  // TODO (2): add this scrollListener to the ScrollController attached to Grid list
   _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
@@ -68,6 +67,7 @@ class _MoviesPageState extends State<MoviesPage> {
             /// GridView is a scrollable, 2D array of movies.widgets.
             /// In Android we would use a RecyclerView in the xml layout with GridLayoutManager
             return GridView.count(
+              controller: _controller,
               crossAxisCount: 2,
               childAspectRatio: .65,
 
