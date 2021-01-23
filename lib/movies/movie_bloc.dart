@@ -19,8 +19,8 @@ class MovieBloc extends Bloc {
     MovieType("Upcoming", MoviesType.UPCOMING)
   ];
 
-  // TODO (1): connect moviesStream to GridList
   final _moviesController = StreamController<List<Movie>>();
+  Stream<List<Movie>> get moviesStream => _moviesController.stream;
 
   // TODO (7): connect moviesTypeTitleStream to AppBar for dynamic title
   final _appBarTitleController = StreamController<String>();

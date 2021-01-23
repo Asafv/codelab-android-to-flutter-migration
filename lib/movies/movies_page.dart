@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_migration_workshop/widgets/movie_list_item.dart';
 
 import '../models/movie.dart';
 import 'movie_bloc.dart';
@@ -59,8 +60,34 @@ class _MoviesPageState extends State<MoviesPage> {
       ),
 
       /// build the grid view with the streamBuilder.
-      // TODO (1): create the Grid list with movies. where fetching movies show loading widget.
-      body: _loadingView(),
+      body: StreamBuilder<List<Movie>>(
+        initialData: _bloc.movies,
+        stream: _bloc.moviesStream,
+        builder: (context, snapshot) {
+          if (snapshot.data.isNotEmpty) {
+            /// GridView is a scrollable, 2D array of movies.widgets.
+            /// In Android we would use a RecyclerView in the xml layout with GridLayoutManager
+            return GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: .65,
+
+              /// List constructor with the data length and items iteration
+              /// each iteration will return the ListItem (a custom widget we created).
+              /// In Android you will have to use and ViewHolder with the RecyclerViewAdapter
+              /// and define the item in xml.
+              children: List.generate(
+                snapshot.data.length,
+                (index) => MovieListItem(
+                  itemWidth: 200,
+                  movie: snapshot.data[index],
+                  onClick: (movie) => debugPrint('onMovieClicked: $movie'),
+                ),
+              ),
+            );
+          }
+          return _loadingView();
+        },
+      ),
     );
   }
 
