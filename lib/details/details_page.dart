@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_migration_workshop/data/api/tmdb_api.dart';
 import 'package:flutter_migration_workshop/models/movie.dart';
+import 'package:flutter_migration_workshop/movies/movie_bloc.dart';
 import 'package:flutter_migration_workshop/widgets/cached_image.dart';
+
+import '../bloc_provider.dart';
 
 const double _imageHeight = 260;
 
@@ -18,8 +21,21 @@ class DetailsPage extends StatelessWidget {
         /// Stack is pretty match the same as FrameLayout in Android
         child: Stack(
           children: <Widget>[
-            // TODO (4): create a FutureBuilder to retrieve the detailed movie object from API
-            _detailColumn(movie),
+            FutureBuilder<Movie>(
+              initialData: null,
+              // getting the bloc from the BlocProvider
+              future:
+                  BlocProvider.of<MovieBloc>(context).getMovieDetails(movie.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done &&
+                    snapshot.hasData) {
+                  // the updated movie model
+                  return _detailColumn(snapshot.data);
+                }
+
+                return _detailColumn(movie);
+              },
+            ),
 
             /// keeping the image in the same hierarchy for Hero animation
             Positioned(top: 10, left: 2, child: _itemImageTile()),
