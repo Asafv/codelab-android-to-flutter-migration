@@ -49,7 +49,6 @@ class _MoviesPageState extends State<MoviesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // TODO (7): create a dynamic title
         title: _streamTitle(),
 
         /// AppBar widget simply has an action [] of movies.widgets which will be displayed after the title.
@@ -116,7 +115,11 @@ class _MoviesPageState extends State<MoviesPage> {
         ),
       );
 
-  Widget _streamTitle() => Text("Now Playing Movies");
+  Widget _streamTitle() => StreamBuilder(
+      stream: _bloc.moviesTypeTitleStream,
+      builder: (context, snapshot) {
+        return Text("${snapshot.data}");
+      });
 
   void _openDetailsPage(Movie movie) {
     /// Build Navigation to DetailsPage

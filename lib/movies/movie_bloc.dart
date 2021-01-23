@@ -22,8 +22,8 @@ class MovieBloc extends Bloc {
   final _moviesController = StreamController<List<Movie>>();
   Stream<List<Movie>> get moviesStream => _moviesController.stream;
 
-  // TODO (7): connect moviesTypeTitleStream to AppBar for dynamic title
   final _appBarTitleController = StreamController<String>();
+  Stream<String> get moviesTypeTitleStream => _appBarTitleController.stream;
 
   /// Cached data inside the bloc
   MoviesType _currentType;
