@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_migration_workshop/details/details_page.dart';
+import 'package:flutter_migration_workshop/models/movie_type.dart';
 import 'package:flutter_migration_workshop/widgets/movie_list_item.dart';
 
 import '../bloc_provider.dart';
@@ -56,7 +57,15 @@ class _MoviesPageState extends State<MoviesPage> {
         /// If we want the icon to be before the title we can use the `leading` property
         // leading: SOME_WIDGET,
         actions: [
-          // TODO (6): create the PopupMenuButton widget with moviesType & attach the onSelected method to the bloc in order to query new data
+          PopupMenuButton<MovieType>(
+            onSelected: _bloc.getMoviesByType,
+            itemBuilder: (context) {
+              return _bloc.moviesType.map((type) {
+                return PopupMenuItem<MovieType>(
+                    value: type, child: Text(type.name));
+              }).toList();
+            },
+          )
         ],
       ),
 
