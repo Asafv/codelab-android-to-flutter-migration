@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_migration_workshop/models/movie.dart';
 import 'package:flutter_migration_workshop/models/movie_type.dart';
 
@@ -45,10 +44,14 @@ class TmdbApi {
   Future<MoviesResponse> getMovies(MoviesType type, int page) async =>
       await _getMovies(_getQueryType(type), page);
 
-  // TODO (5): create the network request for detailed movie.
   Future<Movie> getMovieById(int id) async {
-    debugPrint('getMovieById, NOT IMPLEMENTED');
-    return null;
+    try {
+      Response response = await _dio.get("$_movieEndpoint/$id");
+      return Movie.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occurred: $error stackTrace: $stacktrace");
+      return Movie.withError("$error");
+    }
   }
 
   Future<MoviesResponse> _getMovies(String type, int page) async {
